@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Customers{% endblock %}
+
+{% block extra_css %}
+<style>
+    .customers-header {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .search-box input {
+        padding: 10px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        width: 300px;
+        font-size: 14px;
+    }
+    .btn-add {
+        padding: 12px 24px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: transform 0.2s;
+    }
+    .btn-add:hover {
+        transform: translateY(-2px);
+    }
+    .customers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    .customer-card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+    .customer-card:hover {
+        transform: translateY(-5px);
+    }
+    .customer-card h3 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+    .customer-info {
+        color: #666;
+        margin-bottom: 15px;
+    }
+    .customer-dues {
+        color: #667eea;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    .btn-view {
+        display: inline-block;
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="customers-header">
+    <h1>👥 Customers</h1>
+    <div style="display: flex; gap: 20px; align-items: center;">
+        <form class="search-box" method="GET">
+            <input type="text" name="search" placeholder="Search customers..." value="{{ search_query }}">
+        </form>
+        <a href="{% url 'add_customer' %}" class="btn-add">+ Add Customer</a>
+    </div>
+</div>
+
+<div class="customers-grid">
+    {% for customer in customers %}
+    <div class="customer-card">
+        <h3>{{ customer.customer_name }}</h3>
+        <div class="customer-info">
+            <p>📞 {{ customer.phone_number }}</p>
+            <p>📍 {{ customer.address|truncatewords:10 }}</p>
+        </div>
+        <div class="customer-dues">
+            Pending: ₹{{ customer.total_dues|floatformat:2 }}
+        </div>
+        <a href="{% url 'customer_detail' customer.id %}" class="btn-view">View Details</a>
+    </div>
+    {% empty %}
+    <p style="grid-column: 1/-1; text-align: center; color: white; font-size: 1.2rem;">
+        No customers found. Add your first customer!
+    </p>
+    {% endfor %}
+</div>
+{% endblock %}
